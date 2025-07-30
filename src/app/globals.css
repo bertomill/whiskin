@@ -1,26 +1,123 @@
-@import "tailwindcss";
+/* Import Inter font from Google Fonts - must come first */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base font family */
+* {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Custom gradient background */
+.gradient-bg {
+  background: linear-gradient(180deg, #1e1b4b 0%, #000000 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Card shadow */
+.card-shadow {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Meal card animations */
+.meal-card {
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.meal-card.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Loading spinner animation */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Ingredient tags - using regular CSS instead of @apply */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.tag.protein {
+  background-color: rgba(127, 29, 29, 0.3);
+  color: rgb(254, 226, 226);
+  border: 1px solid rgba(220, 38, 38, 0.5);
+}
+
+.tag.veg-fruit {
+  background-color: rgba(20, 83, 45, 0.3);
+  color: rgb(220, 252, 231);
+  border: 1px solid rgba(22, 163, 74, 0.5);
+}
+
+.tag.carb {
+  background-color: rgba(133, 77, 14, 0.3);
+  color: rgb(254, 240, 138);
+  border: 1px solid rgba(202, 138, 4, 0.5);
+}
+
+.tag.other {
+  background-color: rgba(75, 85, 99, 0.3);
+  color: rgb(243, 244, 246);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+}
+
+/* Fade in animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Premium Typography Enhancements */
+.hero-title {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  font-weight: 400;
+  letter-spacing: 0.025em;
+  line-height: 1.6;
+}
+
+.meal-name {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.section-title {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+.stats-number {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.button-text {
+  font-weight: 600;
+  letter-spacing: 0.025em;
 }
