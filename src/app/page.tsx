@@ -129,9 +129,9 @@ export default function Home() {
   return (
     <AuthGuard>
       <div className="gradient-bg min-h-screen">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4">
           {/* Header with User Profile */}
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-4">
             <div className="flex-1"></div>
             <UserProfile />
           </div>

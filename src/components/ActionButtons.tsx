@@ -9,7 +9,7 @@ export default function ActionButtons({ onGetRandomMeal, isLoading }: ActionButt
       <button 
         onClick={onGetRandomMeal}
         disabled={isLoading}
-        className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white button-text py-4 px-8 rounded-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50 border border-blue-500/30 disabled:transform-none"
+        className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white button-text py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-500/50 border border-blue-500/30 disabled:transform-none"
       >
         {isLoading ? (
           <>

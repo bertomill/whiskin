@@ -1,8 +1,8 @@
 export default function HeroSection() {
   return (
-    <div className="text-center mb-12 fade-in">
-      <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-full mb-6 border border-white/20">
-        <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 180 180">
+    <div className="text-center mb-6 fade-in">
+      <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-full mb-4 border border-white/20">
+        <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 180 180">
           {/* Whisk handle */}
           <rect x="75" y="60" width="8" height="80" rx="4" fill="currentColor" opacity="0.9"/>
           
@@ -22,10 +22,10 @@ export default function HeroSection() {
           <circle cx="105" cy="85" r="1.5" fill="currentColor" opacity="0.8"/>
         </svg>
       </div>
-      <h1 className="text-4xl md:text-6xl hero-title text-white mb-4">
+      <h1 className="text-3xl md:text-5xl hero-title text-white mb-2">
         Whiskin
       </h1>
-      <p className="text-xl hero-subtitle text-gray-300 max-w-2xl mx-auto">
+      <p className="text-lg hero-subtitle text-gray-300 max-w-2xl mx-auto">
         Cook up something great
       </p>
     </div>

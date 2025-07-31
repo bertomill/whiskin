@@ -23,14 +23,61 @@ export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps)
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  // Filter meals based on search term
-  const filteredMeals = meals.filter(meal =>
-    meal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    meal.protein.some(item => item.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    meal.vegFruit.some(item => item.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    meal.carb.some(item => item.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Filter meals based on search term and active filters
+  const filteredMeals = meals.filter(meal => {
+    // Search term filter
+    const matchesSearch = !searchTerm || (
+      meal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      meal.protein.some(item => item.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      meal.vegFruit.some(item => item.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      meal.carb.some(item => item.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    // Filter chips logic
+    const matchesFilters = activeFilters.length === 0 || activeFilters.every(filter => {
+      switch (filter) {
+        case 'has-protein':
+          return meal.protein.length > 0;
+        case 'has-vegfruit':
+          return meal.vegFruit.length > 0;
+        case 'has-carb':
+          return meal.carb.length > 0;
+        case 'has-image':
+          return meal.image;
+        case 'complete':
+          return meal.protein.length > 0 && meal.vegFruit.length > 0 && meal.carb.length > 0;
+        default:
+          return true;
+      }
+    });
+
+    return matchesSearch && matchesFilters;
+  });
+
+  // Get all unique ingredients for filter suggestions
+  const getAllIngredients = () => {
+    const ingredients = new Set<string>();
+    meals.forEach(meal => {
+      meal.protein.forEach(item => ingredients.add(item));
+      meal.vegFruit.forEach(item => ingredients.add(item));
+      meal.carb.forEach(item => ingredients.add(item));
+    });
+    return Array.from(ingredients).sort();
+  };
+
+  const toggleFilter = (filter: string) => {
+    setActiveFilters(prev => 
+      prev.includes(filter) 
+        ? prev.filter(f => f !== filter)
+        : [...prev, filter]
+    );
+  };
+
+  const clearAllFilters = () => {
+    setActiveFilters([]);
+  };
 
   const handleEditMeal = (meal: Meal) => {
     setSelectedMeal(meal);
@@ -51,9 +98,9 @@ export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps)
   };
 
   return (
-    <div className="pb-20"> {/* Add bottom padding to account for tab bar */}
+    <div className="pb-16"> {/* Add bottom padding to account for tab bar */}
       {/* Search Bar */}
-      <div className="mb-6">
+      <div className="mb-4">
         <div className="relative">
           <input
             type="text"
@@ -78,15 +125,56 @@ export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps)
         </div>
       </div>
 
+      {/* Filter Chips */}
+      <div className="mb-6">
+        <div className="flex flex-wrap gap-2 mb-3">
+          {/* Quick Filter Chips */}
+          {[
+            { id: 'has-protein', label: '🥩 Has Protein', count: meals.filter(m => m.protein.length > 0).length },
+            { id: 'has-vegfruit', label: '🥬 Has Veg/Fruit', count: meals.filter(m => m.vegFruit.length > 0).length },
+            { id: 'has-carb', label: '🌾 Has Carbs', count: meals.filter(m => m.carb.length > 0).length },
+            { id: 'has-image', label: '📸 Has Photo', count: meals.filter(m => m.image).length },
+            { id: 'complete', label: '✅ Complete Meals', count: meals.filter(m => m.protein.length > 0 && m.vegFruit.length > 0 && m.carb.length > 0).length }
+          ].map(filter => (
+            <button
+              key={filter.id}
+              onClick={() => toggleFilter(filter.id)}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                activeFilters.includes(filter.id)
+                  ? 'bg-blue-500/30 text-blue-200 border border-blue-400/50'
+                  : 'bg-white/10 text-gray-300 border border-white/20 hover:bg-white/15'
+              }`}
+            >
+              {filter.label} ({filter.count})
+            </button>
+          ))}
+        </div>
+        
+        {/* Clear Filters Button */}
+        {activeFilters.length > 0 && (
+          <button
+            onClick={clearAllFilters}
+            className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
+          >
+            Clear all filters
+          </button>
+        )}
+      </div>
+
       {/* Results Count */}
-      <div className="mb-4">
+      <div className="mb-3">
         <p className="text-gray-300 text-sm">
           {filteredMeals.length} of {meals.length} meals
+          {activeFilters.length > 0 && (
+            <span className="text-blue-300 ml-2">
+              • {activeFilters.length} filter{activeFilters.length !== 1 ? 's' : ''} active
+            </span>
+          )}
         </p>
       </div>
 
       {/* Meals List */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {filteredMeals.length === 0 ? (
           <div className="text-center py-8">
             <svg

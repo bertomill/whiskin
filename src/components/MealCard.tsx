@@ -18,8 +18,8 @@ export default function MealCard({ meal, onEdit }: MealCardProps) {
     if (ingredients.length === 0) return null;
 
     return (
-      <div className="mb-6">
-        <h3 className={`text-lg section-title text-gray-200 mb-3 flex items-center`}>
+      <div className="mb-4">
+        <h3 className={`text-base section-title text-gray-200 mb-2 flex items-center`}>
           <div className={`w-3 h-3 rounded-full mr-2 ${
             type === 'protein' ? 'bg-red-500' :
             type === 'veg-fruit' ? 'bg-green-500' :
@@ -41,11 +41,11 @@ export default function MealCard({ meal, onEdit }: MealCardProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mb-8">
+    <div className="max-w-4xl mx-auto mb-4">
       <div className="bg-gray-800 rounded-3xl overflow-hidden card-shadow border border-gray-700/50">
         {/* Meal Image */}
         {meal.image && (
-          <div className="relative h-64 bg-gradient-to-br from-gray-700 to-gray-800">
+          <div className="relative h-48 bg-gradient-to-br from-gray-700 to-gray-800">
             <img 
               src={meal.image} 
               alt={meal.name}
@@ -56,9 +56,9 @@ export default function MealCard({ meal, onEdit }: MealCardProps) {
         )}
         
         {/* Meal Content */}
-        <div className="p-8">
-          <div className="flex justify-between items-start mb-6">
-            <h2 className="text-3xl meal-name text-white text-center flex-1">
+        <div className="p-6">
+          <div className="flex justify-between items-start mb-4">
+            <h2 className="text-2xl meal-name text-white text-center flex-1">
               {meal.name}
             </h2>
             <button 
@@ -73,7 +73,7 @@ export default function MealCard({ meal, onEdit }: MealCardProps) {
           </div>
           
           {/* Ingredients Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {displayIngredients('protein', meal.protein)}
             {displayIngredients('veg-fruit', meal.vegFruit)}
             {displayIngredients('carb', meal.carb)}

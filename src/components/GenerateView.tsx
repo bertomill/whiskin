@@ -56,7 +56,7 @@ export default function GenerateView({
   };
 
   return (
-    <div className="pb-20"> {/* Add bottom padding to account for tab bar */}
+    <div className="pb-16"> {/* Add bottom padding to account for tab bar */}
       {/* Stats Card */}
       <StatsCard mealCount={meals.length} isLoading={isLoading} />
 
