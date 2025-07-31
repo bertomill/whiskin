@@ -17,7 +17,7 @@ async function handleUpdateMeal(request: NextRequest, mealId: string) {
     return NextResponse.json({ error: 'Meal ID is required' }, { status: 400 });
   }
 
-  const properties: any = {};
+  const properties: Record<string, any> = {};
 
   // Update name if provided
   if (name) {

@@ -363,7 +363,7 @@ export default function EditModal({ meal, onClose, onUpdate }: EditModalProps) {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span>
-                      <strong>Tip:</strong> Images are ultra-compressed to fit Notion's strict 2000 character limit. Copy an image then press <kbd className="bg-gray-600 px-1 rounded">Cmd+V</kbd> or <kbd className="bg-gray-600 px-1 rounded">Ctrl+V</kbd> to paste!
+                      <strong>Tip:</strong> Images are ultra-compressed to fit Notion&apos;s strict 2000 character limit. Copy an image then press <kbd className="bg-gray-600 px-1 rounded">Cmd+V</kbd> or <kbd className="bg-gray-600 px-1 rounded">Ctrl+V</kbd> to paste!
                     </span>
                   </div>
               </div>
