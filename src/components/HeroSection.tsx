@@ -10,7 +10,7 @@ export default function HeroSection() {
         MealBoost
       </h1>
       <p className="text-xl hero-subtitle text-gray-300 max-w-2xl mx-auto">
-        Discover your next delicious meal from your Notion collection
+        Make every meal a little better
       </p>
     </div>
   );
