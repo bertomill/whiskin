@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { getRow, execute } from '@/lib/db';
-import { randomUUID } from 'crypto';
+import { prisma } from '@/lib/prisma';
 
 // This file handles new user registration (signup) in our application
 // It receives user data, validates it, and creates a new user account
@@ -51,7 +50,9 @@ export async function POST(request: NextRequest) {
     
     // Look up if someone already has an account with this email
     // We don't want duplicate accounts with the same email
-    const existingUser = await getRow('SELECT * FROM "User" WHERE email = $1', [email]);
+    const existingUser = await prisma.user.findUnique({
+      where: { email }
+    });
 
     if (existingUser) {
       console.log('❌ User already exists:', email);
@@ -70,23 +71,27 @@ export async function POST(request: NextRequest) {
 
     console.log('👤 Creating user in database...');
     
-    // Create a new user account in our database
-    // Store their name, email, and secured password
-    const userId = randomUUID();
-    const now = new Date();
-    
-    await execute(
-      'INSERT INTO "User" (id, name, email, password, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6)',
-      [userId, name, email, hashedPassword, now, now]
-    );
+    // Create a new user account in our database using Prisma
+    // This ensures compatibility with NextAuth and proper ID generation
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+      // Only return safe fields (no password)
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        emailVerified: true,
+        image: true,
+        createdAt: true,
+        updatedAt: true,
+      }
+    });
 
-    console.log('✅ User created successfully:', { id: userId, email });
-
-    // Get the created user (without password) for the response
-    const user = await getRow(
-      'SELECT id, name, email, "emailVerified", image, "createdAt", "updatedAt" FROM "User" WHERE id = $1',
-      [userId]
-    );
+    console.log('✅ User created successfully:', { id: user.id, email: user.email });
 
     // Send back a success message and the new user's information
     return NextResponse.json(
@@ -112,9 +117,9 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Check if there's a problem with our database operations
-    if (error instanceof Error && error.message.includes('duplicate')) {
-      console.error('🔑 Duplicate key error (email already exists)');
+    // Handle Prisma-specific unique constraint errors
+    if (error instanceof Error && error.message.includes('Unique constraint')) {
+      console.error('🔑 Unique constraint violation (email already exists)');
       return NextResponse.json(
         { error: 'User with this email already exists' },
         { status: 400 }

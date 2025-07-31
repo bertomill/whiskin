@@ -1,42 +1,73 @@
-import { NextResponse } from 'next/server';
-import { query, getRow } from '@/lib/db';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
-export async function GET() {
+// This endpoint helps us test if our database connection is working properly
+// It's useful for debugging authentication and user creation issues
+
+export async function GET(request: NextRequest) {
   try {
     console.log('🔍 Testing database connection...');
-    
-    // Test 1: Simple query to check connection
-    const result = await query('SELECT NOW() as current_time');
-    console.log('✅ Database connection successful:', result.rows[0]);
-    
-    // Test 2: Check if User table is accessible
-    const userCount = await query('SELECT COUNT(*) as count FROM "User"');
-    console.log('✅ User table accessible:', userCount.rows[0]);
-    
-    // Test 3: Try to get a sample user
-    const sampleUser = await getRow('SELECT id, name, email FROM "User" LIMIT 1');
-    console.log('✅ Sample user query:', sampleUser);
-    
-    return NextResponse.json({
-      success: true,
-      message: 'Database connection working',
-      data: {
-        currentTime: result.rows[0],
-        userCount: userCount.rows[0],
-        sampleUser: sampleUser
+
+    // Test basic connection
+    await prisma.$connect();
+    console.log('✅ Database connected successfully');
+
+    // Count total users
+    const userCount = await prisma.user.count();
+    console.log('👥 Total users in database:', userCount);
+
+    // Get recent users (without passwords for security)
+    const recentUsers = await prisma.user.findMany({
+      take: 5,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        emailVerified: true,
+        createdAt: true,
+        _count: {
+          select: {
+            accounts: true,
+            sessions: true,
+          }
+        }
       }
     });
-    
+
+    // Test NextAuth tables
+    const accountCount = await prisma.account.count();
+    const sessionCount = await prisma.session.count();
+
+    console.log('📊 Database stats:', {
+      users: userCount,
+      accounts: accountCount,
+      sessions: sessionCount,
+      recentUsers: recentUsers.length
+    });
+
+    return NextResponse.json({
+      status: 'success',
+      message: 'Database connection working',
+      stats: {
+        users: userCount,
+        accounts: accountCount,
+        sessions: sessionCount,
+      },
+      recentUsers,
+      timestamp: new Date().toISOString(),
+    });
+
   } catch (error) {
-    console.error('💥 Database test error:', error);
-    console.error('💥 Error name:', error instanceof Error ? error.name : 'Unknown');
-    console.error('💥 Error message:', error instanceof Error ? error.message : 'Unknown');
-    console.error('💥 Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error('💥 Database test failed:', error);
     
     return NextResponse.json({
-      success: false,
+      status: 'error',
+      message: 'Database connection failed',
       error: error instanceof Error ? error.message : 'Unknown error',
-      errorName: error instanceof Error ? error.name : 'Unknown'
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
   }
 } 

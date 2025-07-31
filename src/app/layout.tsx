@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
 import AddToHomeScreen from "@/components/AddToHomeScreen";
@@ -17,16 +17,21 @@ export const metadata: Metadata = {
   },
   // PWA metadata for better mobile experience and "Add to Home Screen" functionality
   manifest: '/manifest.json',
-  // Theme color that matches our app's branding for mobile browsers
-  themeColor: '#E74C3C',
-  // Additional PWA-related metadata
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'Whiskin',
   },
 };
+
+// Next.js 15 requires viewport and themeColor to be in separate export
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#E74C3C',
+}
 
 export default function RootLayout({
   children,

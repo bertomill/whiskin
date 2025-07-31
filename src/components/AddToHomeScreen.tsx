@@ -2,11 +2,21 @@
 
 import { useState, useEffect } from 'react';
 
+// Interface for the beforeinstallprompt event
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
+
 // This component shows an "Add to Home Screen" button when the app can be installed as a PWA
 // It detects if the user is on mobile and if the browser supports PWA installation
 export default function AddToHomeScreen() {
   // State to track if the app can be installed
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   // State to track if we should show the install button
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   // State to track installation success
@@ -15,12 +25,12 @@ export default function AddToHomeScreen() {
   useEffect(() => {
     // Listen for the beforeinstallprompt event
     // This event is fired when the browser determines the app can be installed
-    const handleBeforeInstallPrompt = (event: any) => {
+    const handleBeforeInstallPrompt = (event: Event) => {
       console.log('PWA install prompt available');
       // Prevent the default browser install prompt
       event.preventDefault();
       // Store the event so we can trigger it later when user clicks our button
-      setDeferredPrompt(event);
+      setDeferredPrompt(event as BeforeInstallPromptEvent);
       // Show our custom install button
       setShowInstallPrompt(true);
     };
@@ -53,21 +63,34 @@ export default function AddToHomeScreen() {
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
 
-    // Show the browser's install prompt
-    deferredPrompt.prompt();
-    
-    // Wait for the user's response to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    } else {
-      console.log('User dismissed the install prompt');
+    try {
+      // Show the browser's install prompt
+      await deferredPrompt.prompt();
+      
+      // Wait for the user's response to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+        setIsInstalled(true);
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      
+      // Clear the deferred prompt since it can only be used once
+      setDeferredPrompt(null);
+      setShowInstallPrompt(false);
+    } catch (error) {
+      console.error('Error showing install prompt:', error);
+      setShowInstallPrompt(false);
     }
-    
-    // Clear the deferred prompt since it can only be used once
-    setDeferredPrompt(null);
+  };
+
+  // Function to handle the "Later" button click
+  const handleLaterClick = () => {
     setShowInstallPrompt(false);
+    // Store in localStorage to not show again for this session
+    localStorage.setItem('pwa-install-dismissed', Date.now().toString());
   };
 
   // Don't show anything if the app is already installed or can't be installed
@@ -97,7 +120,7 @@ export default function AddToHomeScreen() {
           {/* Buttons */}
           <div className="flex space-x-2">
             <button
-              onClick={() => setShowInstallPrompt(false)}
+              onClick={handleLaterClick}
               className="text-white/80 hover:text-white text-xs font-medium px-2 py-1"
             >
               Later
