@@ -1,0 +1,56 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E74C3C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="whiskGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F8F9FA;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="90" cy="90" r="85" fill="url(#bgGradient)" stroke="#C0392B" stroke-width="2"/>
+  
+  <!-- Motion blur effect for whisk -->
+  <g opacity="0.3">
+    <!-- Whisk handle shadow -->
+    <rect x="75" y="60" width="8" height="80" rx="4" fill="#2C3E50" transform="rotate(15 79 100)"/>
+    <!-- Whisk wires shadow -->
+    <path d="M75 60 Q85 50 95 60 Q105 70 115 60" stroke="#2C3E50" stroke-width="3" fill="none" transform="rotate(15 95 60)"/>
+    <path d="M75 65 Q85 55 95 65 Q105 75 115 65" stroke="#2C3E50" stroke-width="3" fill="none" transform="rotate(15 95 65)"/>
+    <path d="M75 70 Q85 60 95 70 Q105 80 115 70" stroke="#2C3E50" stroke-width="3" fill="none" transform="rotate(15 95 70)"/>
+  </g>
+  
+  <!-- Main whisk handle -->
+  <rect x="75" y="60" width="8" height="80" rx="4" fill="url(#whiskGradient)" stroke="#E9ECEF" stroke-width="1"/>
+  
+  <!-- Whisk wires with motion effect -->
+  <path d="M75 60 Q85 50 95 60 Q105 70 115 60" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M75 65 Q85 55 95 65 Q105 75 115 65" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M75 70 Q85 60 95 70 Q105 80 115 70" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M75 75 Q85 65 95 75 Q105 85 115 75" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Motion lines around whisk -->
+  <g opacity="0.6">
+    <path d="M70 50 Q80 45 90 50" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.7"/>
+    <path d="M100 50 Q110 45 120 50" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.7"/>
+    <path d="M70 55 Q80 50 90 55" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.5"/>
+    <path d="M100 55 Q110 50 120 55" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.5"/>
+  </g>
+  
+  <!-- Small food particles being whisked -->
+  <circle cx="85" cy="85" r="2" fill="#FFD93D" opacity="0.8"/>
+  <circle cx="95" cy="90" r="1.5" fill="#6BCF7F" opacity="0.8"/>
+  <circle cx="105" cy="85" r="1.5" fill="#FF8A80" opacity="0.8"/>
+  <circle cx="90" cy="95" r="1" fill="#FFD93D" opacity="0.6"/>
+  <circle cx="100" cy="95" r="1" fill="#6BCF7F" opacity="0.6"/>
+  
+  <!-- Energy/motion dots -->
+  <circle cx="70" cy="75" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="120" cy="75" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="65" cy="85" r="1" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="125" cy="85" r="1" fill="#FFFFFF" opacity="0.6"/>
+</svg> 
