@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import MealCard from './MealCard';
+
 import EditModal from './EditModal';
 
 interface Meal {

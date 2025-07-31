@@ -97,7 +97,7 @@ export default function EditModal({ meal, onClose, onUpdate }: EditModalProps) {
       await onUpdate(updatedMeal);
     } catch (error) {
       console.error('Error updating meal:', error);
-      // Don't close modal on error, let user try again or manually close
+      // Don&apos;t close modal on error, let user try again or manually close
     } finally {
       setIsSaving(false);
     }

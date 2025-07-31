@@ -61,7 +61,7 @@ async function handleCreateMeal(request: NextRequest) {
     return NextResponse.json({ error: 'Meal name is required' }, { status: 400 });
   }
 
-  const properties: any = {
+  const properties: Record<string, any> = {
     Name: {
       title: [
         {
@@ -129,8 +129,8 @@ async function handleCreateMeal(request: NextRequest) {
   }, { status: 201 });
 }
 
-// PUT - Update an existing meal
-async function handleUpdateMeal(request: NextRequest, mealId: string) {
+// PUT - Update an existing meal (unused but kept for future use)
+async function handleUpdateMeal(_request: NextRequest, _mealId: string) {
   const body = await request.json();
   const { name, protein, vegFruit, otherIngredients, carb, image } = body;
 
@@ -138,7 +138,7 @@ async function handleUpdateMeal(request: NextRequest, mealId: string) {
     return NextResponse.json({ error: 'Meal ID is required' }, { status: 400 });
   }
 
-  const properties: any = {};
+  const properties: Record<string, any> = {};
 
   // Update name if provided
   if (name) {
