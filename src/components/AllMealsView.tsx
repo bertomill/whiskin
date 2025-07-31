@@ -114,6 +114,20 @@ export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps)
               onClick={() => handleEditMeal(meal)}
             >
               <div className="flex items-center justify-between">
+                {/* Meal Image */}
+                {meal.image && (
+                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-white/5 border border-white/10 flex-shrink-0 mr-4">
+                    <img
+                      src={meal.image}
+                      alt={meal.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+                
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-white mb-2">{meal.name}</h3>
                   <div className="flex flex-wrap gap-2">

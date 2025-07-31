@@ -3,7 +3,7 @@ import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
 
 export const metadata: Metadata = {
-  title: "MealBoost",
+  title: "Whiskin",
   description: "Discover your next delicious meal from your Notion collection",
   icons: {
     apple: [
@@ -27,7 +27,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="MealBoost" />
+        <meta name="apple-mobile-web-app-title" content="Whiskin" />
       </head>
       <body>
         <SessionProvider>
