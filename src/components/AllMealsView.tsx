@@ -25,7 +25,32 @@ export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps)
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  // Filter meals based on search term and active filters
+  // Get ingredient counts and organize by category
+  const getIngredientsByCategory = () => {
+    const proteinCounts = new Map<string, number>();
+    const vegFruitCounts = new Map<string, number>();
+    const carbCounts = new Map<string, number>();
+
+    meals.forEach(meal => {
+      meal.protein.forEach(item => {
+        proteinCounts.set(item, (proteinCounts.get(item) || 0) + 1);
+      });
+      meal.vegFruit.forEach(item => {
+        vegFruitCounts.set(item, (vegFruitCounts.get(item) || 0) + 1);
+      });
+      meal.carb.forEach(item => {
+        carbCounts.set(item, (carbCounts.get(item) || 0) + 1);
+      });
+    });
+
+    return {
+      protein: Array.from(proteinCounts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8),
+      vegFruit: Array.from(vegFruitCounts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8),
+      carb: Array.from(carbCounts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8)
+    };
+  };
+
+  // Filter meals based on search term and active ingredient filters
   const filteredMeals = meals.filter(meal => {
     // Search term filter
     const matchesSearch = !searchTerm || (
@@ -35,37 +60,15 @@ export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps)
       meal.carb.some(item => item.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    // Filter chips logic
-    const matchesFilters = activeFilters.length === 0 || activeFilters.every(filter => {
-      switch (filter) {
-        case 'has-protein':
-          return meal.protein.length > 0;
-        case 'has-vegfruit':
-          return meal.vegFruit.length > 0;
-        case 'has-carb':
-          return meal.carb.length > 0;
-        case 'has-image':
-          return meal.image;
-        case 'complete':
-          return meal.protein.length > 0 && meal.vegFruit.length > 0 && meal.carb.length > 0;
-        default:
-          return true;
-      }
+    // Ingredient filter logic - meal must contain ALL selected ingredients
+    const matchesFilters = activeFilters.length === 0 || activeFilters.every(ingredient => {
+      return meal.protein.includes(ingredient) || 
+             meal.vegFruit.includes(ingredient) || 
+             meal.carb.includes(ingredient);
     });
 
     return matchesSearch && matchesFilters;
   });
-
-  // Get all unique ingredients for filter suggestions
-  const getAllIngredients = () => {
-    const ingredients = new Set<string>();
-    meals.forEach(meal => {
-      meal.protein.forEach(item => ingredients.add(item));
-      meal.vegFruit.forEach(item => ingredients.add(item));
-      meal.carb.forEach(item => ingredients.add(item));
-    });
-    return Array.from(ingredients).sort();
-  };
 
   const toggleFilter = (filter: string) => {
     setActiveFilters(prev => 
@@ -127,28 +130,80 @@ export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps)
 
       {/* Filter Chips */}
       <div className="mb-6">
-        <div className="flex flex-wrap gap-2 mb-3">
-          {/* Quick Filter Chips */}
-          {[
-            { id: 'has-protein', label: '🥩 Has Protein', count: meals.filter(m => m.protein.length > 0).length },
-            { id: 'has-vegfruit', label: '🥬 Has Veg/Fruit', count: meals.filter(m => m.vegFruit.length > 0).length },
-            { id: 'has-carb', label: '🌾 Has Carbs', count: meals.filter(m => m.carb.length > 0).length },
-            { id: 'has-image', label: '📸 Has Photo', count: meals.filter(m => m.image).length },
-            { id: 'complete', label: '✅ Complete Meals', count: meals.filter(m => m.protein.length > 0 && m.vegFruit.length > 0 && m.carb.length > 0).length }
-          ].map(filter => (
-            <button
-              key={filter.id}
-              onClick={() => toggleFilter(filter.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
-                activeFilters.includes(filter.id)
-                  ? 'bg-blue-500/30 text-blue-200 border border-blue-400/50'
-                  : 'bg-white/10 text-gray-300 border border-white/20 hover:bg-white/15'
-              }`}
-            >
-              {filter.label} ({filter.count})
-            </button>
-          ))}
-        </div>
+        {(() => {
+          const ingredientsByCategory = getIngredientsByCategory();
+          
+          return (
+            <div className="space-y-3">
+              {/* Protein Filters */}
+              {ingredientsByCategory.protein.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-2 font-medium">🥩 Proteins</p>
+                  <div className="flex flex-wrap gap-2">
+                    {ingredientsByCategory.protein.map(([ingredient, count]) => (
+                      <button
+                        key={ingredient}
+                        onClick={() => toggleFilter(ingredient)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                          activeFilters.includes(ingredient)
+                            ? 'bg-red-500/30 text-red-200 border border-red-400/50'
+                            : 'bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20'
+                        }`}
+                      >
+                        {ingredient} ({count})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Veg/Fruit Filters */}
+              {ingredientsByCategory.vegFruit.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-2 font-medium">🥬 Vegetables & Fruits</p>
+                  <div className="flex flex-wrap gap-2">
+                    {ingredientsByCategory.vegFruit.map(([ingredient, count]) => (
+                      <button
+                        key={ingredient}
+                        onClick={() => toggleFilter(ingredient)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                          activeFilters.includes(ingredient)
+                            ? 'bg-green-500/30 text-green-200 border border-green-400/50'
+                            : 'bg-green-500/10 text-green-300 border border-green-500/20 hover:bg-green-500/20'
+                        }`}
+                      >
+                        {ingredient} ({count})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Carb Filters */}
+              {ingredientsByCategory.carb.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-2 font-medium">🌾 Carbohydrates</p>
+                  <div className="flex flex-wrap gap-2">
+                    {ingredientsByCategory.carb.map(([ingredient, count]) => (
+                      <button
+                        key={ingredient}
+                        onClick={() => toggleFilter(ingredient)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                          activeFilters.includes(ingredient)
+                            ? 'bg-yellow-500/30 text-yellow-200 border border-yellow-400/50'
+                            : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20 hover:bg-yellow-500/20'
+                        }`}
+                      >
+                        {ingredient} ({count})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+        
         
         {/* Clear Filters Button */}
         {activeFilters.length > 0 && (
