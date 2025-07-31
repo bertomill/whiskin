@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { prisma } from '@/lib/prisma';
+import { getRow, execute } from '@/lib/db';
+import { randomUUID } from 'crypto';
 
 // This file handles new user registration (signup) in our application
 // It receives user data, validates it, and creates a new user account
@@ -50,9 +51,7 @@ export async function POST(request: NextRequest) {
     
     // Look up if someone already has an account with this email
     // We don't want duplicate accounts with the same email
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    const existingUser = await getRow('SELECT * FROM "User" WHERE email = $1', [email]);
 
     if (existingUser) {
       console.log('❌ User already exists:', email);
@@ -73,25 +72,27 @@ export async function POST(request: NextRequest) {
     
     // Create a new user account in our database
     // Store their name, email, and secured password
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-    });
+    const userId = randomUUID();
+    const now = new Date();
+    
+    await execute(
+      'INSERT INTO "User" (id, name, email, password, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6)',
+      [userId, name, email, hashedPassword, now, now]
+    );
 
-    console.log('✅ User created successfully:', { id: user.id, email: user.email });
+    console.log('✅ User created successfully:', { id: userId, email });
 
-    // Remove the password from the response for security
-    // We never want to send passwords back to the browser
-    const { password: _password, ...userWithoutPassword } = user;
+    // Get the created user (without password) for the response
+    const user = await getRow(
+      'SELECT id, name, email, "emailVerified", image, "createdAt", "updatedAt" FROM "User" WHERE id = $1',
+      [userId]
+    );
 
     // Send back a success message and the new user's information
     return NextResponse.json(
       { 
         message: 'User created successfully',
-        user: userWithoutPassword 
+        user 
       },
       { status: 201 }
     );
@@ -112,18 +113,18 @@ export async function POST(request: NextRequest) {
     }
     
     // Check if there's a problem with our database operations
-    if (error instanceof Error && error.message.includes('prisma')) {
-      console.error('🗄️ Prisma database error detected');
+    if (error instanceof Error && error.message.includes('duplicate')) {
+      console.error('🔑 Duplicate key error (email already exists)');
       return NextResponse.json(
-        { error: 'Database error. Please try again later.' },
-        { status: 500 }
+        { error: 'User with this email already exists' },
+        { status: 400 }
       );
     }
 
     // Handle specific database error cases
     if (error instanceof Error) {
       // If someone tries to use an email that's already taken
-      if (error.message.includes('P2002')) {
+      if (error.message.includes('unique constraint')) {
         console.error('🔑 Unique constraint violation (email already exists)');
         return NextResponse.json(
           { error: 'User with this email already exists' },
@@ -132,7 +133,7 @@ export async function POST(request: NextRequest) {
       }
       
       // If we can't reach the database server
-      if (error.message.includes('P1001')) {
+      if (error.message.includes('ECONNREFUSED')) {
         console.error('🔌 Database server unreachable');
         return NextResponse.json(
           { error: 'Database server unreachable. Please try again later.' },
@@ -141,7 +142,7 @@ export async function POST(request: NextRequest) {
       }
       
       // If the database connection times out
-      if (error.message.includes('P1002')) {
+      if (error.message.includes('timeout')) {
         console.error('⏰ Database connection timeout');
         return NextResponse.json(
           { error: 'Database connection timeout. Please try again later.' },

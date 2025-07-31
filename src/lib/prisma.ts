@@ -4,41 +4,49 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-// Add logging for database connection
-const logQuery = (e: any) => {
-  console.log('🗄️ Prisma Query:', e.query)
-  console.log('⏱️ Prisma Duration:', e.duration + 'ms')
-}
-
-const logError = (e: any) => {
-  console.error('💥 Prisma Error:', e.error)
-  console.error('💥 Prisma Query:', e.query)
-  console.error('💥 Prisma Duration:', e.duration + 'ms')
-}
-
+// Create Prisma client with minimal configuration for Supabase
 export const prisma = globalForPrisma.prisma ?? new PrismaClient({
-  log: [
-    {
-      emit: 'event',
-      level: 'query',
-    },
-    {
-      emit: 'event',
-      level: 'error',
-    },
-    {
-      emit: 'stdout',
-      level: 'info',
-    },
-    {
-      emit: 'stdout',
-      level: 'warn',
-    },
-  ],
+  log: ['error', 'warn'],
 })
 
-// Add event listeners for logging
-prisma.$on('query', logQuery)
-prisma.$on('error', logError)
+// Helper function for raw SQL queries (useful for Supabase)
+export async function executeRawQuery(query: string, params: unknown[] = []) {
+  try {
+    const result = await prisma.$executeRawUnsafe(query, ...params)
+    return result
+  } catch (error) {
+    console.error('Raw query error:', error)
+    throw error
+  }
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma 
+// Helper function for raw SQL queries that return data
+export async function queryRaw(query: string, params: unknown[] = []) {
+  try {
+    const result = await prisma.$queryRawUnsafe(query, ...params)
+    return result
+  } catch (error) {
+    console.error('Raw query error:', error)
+    throw error
+  }
+}
+
+// Handle connection cleanup for development
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma
+  
+  // Add graceful shutdown handling
+  process.on('beforeExit', async () => {
+    await prisma.$disconnect()
+  })
+  
+  process.on('SIGINT', async () => {
+    await prisma.$disconnect()
+    process.exit(0)
+  })
+  
+  process.on('SIGTERM', async () => {
+    await prisma.$disconnect()
+    process.exit(0)
+  })
+} 

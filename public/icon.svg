@@ -1,56 +1,42 @@
+<!-- This is a modern, simple kitchen whisk icon that fills the entire app icon square -->
+<!-- The design uses a coral/red gradient background that fills the whole 180x180 space -->
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle with gradient -->
+  <!-- Background gradient that fills the entire square - no more circle! -->
   <defs>
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#E74C3C;stop-opacity:1" />
     </linearGradient>
-    <linearGradient id="whiskGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="whiskGradient" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#F8F9FA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F1F2F6;stop-opacity:1" />
     </linearGradient>
   </defs>
   
-  <!-- Background circle -->
-  <circle cx="90" cy="90" r="85" fill="url(#bgGradient)" stroke="#C0392B" stroke-width="2"/>
+  <!-- Full square background with rounded corners for a modern look -->
+  <rect x="0" y="0" width="180" height="180" rx="24" fill="url(#bgGradient)"/>
   
-  <!-- Motion blur effect for whisk -->
-  <g opacity="0.3">
-    <!-- Whisk handle shadow -->
-    <rect x="75" y="60" width="8" height="80" rx="4" fill="#2C3E50" transform="rotate(15 79 100)"/>
-    <!-- Whisk wires shadow -->
-    <path d="M75 60 Q85 50 95 60 Q105 70 115 60" stroke="#2C3E50" stroke-width="3" fill="none" transform="rotate(15 95 60)"/>
-    <path d="M75 65 Q85 55 95 65 Q105 75 115 65" stroke="#2C3E50" stroke-width="3" fill="none" transform="rotate(15 95 65)"/>
-    <path d="M75 70 Q85 60 95 70 Q105 80 115 70" stroke="#2C3E50" stroke-width="3" fill="none" transform="rotate(15 95 70)"/>
-  </g>
+  <!-- Simple, clean whisk design centered in the square -->
+  <!-- Whisk handle - straight and clean -->
+  <rect x="84" y="90" width="12" height="70" rx="6" fill="url(#whiskGradient)" stroke="#E5E5E5" stroke-width="1"/>
   
-  <!-- Main whisk handle -->
-  <rect x="75" y="60" width="8" height="80" rx="4" fill="url(#whiskGradient)" stroke="#E9ECEF" stroke-width="1"/>
+  <!-- Whisk wires - simplified and more geometric -->
+  <!-- Left wire -->
+  <path d="M90 85 Q75 70 60 85 Q75 100 90 85" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   
-  <!-- Whisk wires with motion effect -->
-  <path d="M75 60 Q85 50 95 60 Q105 70 115 60" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <path d="M75 65 Q85 55 95 65 Q105 75 115 65" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <path d="M75 70 Q85 60 95 70 Q105 80 115 70" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <path d="M75 75 Q85 65 95 75 Q105 85 115 75" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Center wire -->
+  <path d="M90 85 Q90 65 90 45 Q90 65 90 85" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   
-  <!-- Motion lines around whisk -->
-  <g opacity="0.6">
-    <path d="M70 50 Q80 45 90 50" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.7"/>
-    <path d="M100 50 Q110 45 120 50" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.7"/>
-    <path d="M70 55 Q80 50 90 55" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.5"/>
-    <path d="M100 55 Q110 50 120 55" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.5"/>
-  </g>
+  <!-- Right wire -->
+  <path d="M90 85 Q105 70 120 85 Q105 100 90 85" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   
-  <!-- Small food particles being whisked -->
-  <circle cx="85" cy="85" r="2" fill="#FFD93D" opacity="0.8"/>
-  <circle cx="95" cy="90" r="1.5" fill="#6BCF7F" opacity="0.8"/>
-  <circle cx="105" cy="85" r="1.5" fill="#FF8A80" opacity="0.8"/>
-  <circle cx="90" cy="95" r="1" fill="#FFD93D" opacity="0.6"/>
-  <circle cx="100" cy="95" r="1" fill="#6BCF7F" opacity="0.6"/>
+  <!-- Additional side wires for more whisk-like appearance -->
+  <path d="M90 88 Q80 75 70 88 Q80 98 90 88" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"/>
+  <path d="M90 88 Q100 75 110 88 Q100 98 90 88" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"/>
   
-  <!-- Energy/motion dots -->
-  <circle cx="70" cy="75" r="1.5" fill="#FFFFFF" opacity="0.8"/>
-  <circle cx="120" cy="75" r="1.5" fill="#FFFFFF" opacity="0.8"/>
-  <circle cx="65" cy="85" r="1" fill="#FFFFFF" opacity="0.6"/>
-  <circle cx="125" cy="85" r="1" fill="#FFFFFF" opacity="0.6"/>
+  <!-- Handle grip texture - simple lines for detail -->
+  <line x1="87" y1="100" x2="93" y2="100" stroke="#E5E5E5" stroke-width="1" opacity="0.7"/>
+  <line x1="87" y1="105" x2="93" y2="105" stroke="#E5E5E5" stroke-width="1" opacity="0.7"/>
+  <line x1="87" y1="110" x2="93" y2="110" stroke="#E5E5E5" stroke-width="1" opacity="0.7"/>
+  
 </svg> 

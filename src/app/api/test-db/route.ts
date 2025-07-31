@@ -1,47 +1,42 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
+import { query, getRow } from '@/lib/db';
 
-export async function GET(request: NextRequest) {
-  console.log('🧪 Database test endpoint called');
-  
+export async function GET() {
   try {
     console.log('🔍 Testing database connection...');
     
-    // Test basic connection
-    const result = await prisma.$queryRaw`SELECT 1 as test`;
-    console.log('✅ Database connection successful:', result);
+    // Test 1: Simple query to check connection
+    const result = await query('SELECT NOW() as current_time');
+    console.log('✅ Database connection successful:', result.rows[0]);
     
-    // Test if tables exist
-    const tables = await prisma.$queryRaw`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-    `;
-    console.log('📋 Available tables:', tables);
+    // Test 2: Check if User table is accessible
+    const userCount = await query('SELECT COUNT(*) as count FROM "User"');
+    console.log('✅ User table accessible:', userCount.rows[0]);
     
-    // Test User table specifically
-    const userCount = await prisma.user.count();
-    console.log('👥 User count:', userCount);
+    // Test 3: Try to get a sample user
+    const sampleUser = await getRow('SELECT id, name, email FROM "User" LIMIT 1');
+    console.log('✅ Sample user query:', sampleUser);
     
     return NextResponse.json({
-      status: 'success',
+      success: true,
       message: 'Database connection working',
       data: {
-        connection: 'ok',
-        tables: tables,
-        userCount: userCount
+        currentTime: result.rows[0],
+        userCount: userCount.rows[0],
+        sampleUser: sampleUser
       }
     });
     
   } catch (error) {
-    console.error('💥 Database test failed:', error);
+    console.error('💥 Database test error:', error);
     console.error('💥 Error name:', error instanceof Error ? error.name : 'Unknown');
     console.error('💥 Error message:', error instanceof Error ? error.message : 'Unknown');
+    console.error('💥 Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     
     return NextResponse.json({
-      status: 'error',
-      message: 'Database connection failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      errorName: error instanceof Error ? error.name : 'Unknown'
     }, { status: 500 });
   }
 } 
