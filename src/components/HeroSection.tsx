@@ -7,7 +7,7 @@ export default function HeroSection() {
         </svg>
       </div>
       <h1 className="text-4xl md:text-6xl hero-title text-white mb-4">
-        Random Meal Selector
+        MealBoost
       </h1>
       <p className="text-xl hero-subtitle text-gray-300 max-w-2xl mx-auto">
         Discover your next delicious meal from your Notion collection

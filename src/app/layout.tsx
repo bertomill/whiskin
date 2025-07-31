@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Random Meal Selector",
+  title: "MealBoost",
   description: "Discover your next delicious meal from your Notion collection",
   icons: {
     apple: [
@@ -26,7 +26,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Meal Generator" />
+        <meta name="apple-mobile-web-app-title" content="MealBoost" />
       </head>
       <body>{children}</body>
     </html>
