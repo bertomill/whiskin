@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import HeroSection from '@/components/HeroSection';
-import StatsCard from '@/components/StatsCard';
-import MealCard from '@/components/MealCard';
-import ActionButtons from '@/components/ActionButtons';
-import ErrorMessage from '@/components/ErrorMessage';
-import EditModal from '@/components/EditModal';
+import TabNavigation from '@/components/TabNavigation';
+import GenerateView from '@/components/GenerateView';
+import AllMealsView from '@/components/AllMealsView';
 
 interface Meal {
   id: string;
@@ -24,7 +22,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'generate' | 'all-meals'>('generate');
 
   // Load meals from the API when component mounts
   useEffect(() => {
@@ -78,19 +76,11 @@ export default function Home() {
     setError(null);
   };
 
-  const handleEditMeal = () => {
-    setShowEditModal(true);
-  };
 
-  const handleCloseEditModal = () => {
-    setShowEditModal(false);
-  };
 
-  const handleUpdateMeal = async (updatedMeal: Omit<Meal, 'id'>) => {
-    if (!currentMeal) return;
-
+  const handleUpdateMeal = async (mealId: string, updatedMeal: Omit<Meal, 'id'>) => {
     try {
-      const response = await fetch(`/api/meals/${currentMeal.id}`, {
+      const response = await fetch(`/api/meals/${mealId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -112,19 +102,20 @@ export default function Home() {
       // Update the meals array with the updated meal
       setMeals(prevMeals => 
         prevMeals.map(meal => 
-          meal.id === currentMeal.id ? data.meal : meal
+          meal.id === mealId ? data.meal : meal
         )
       );
       
-      // Update the current meal
-      setCurrentMeal(data.meal);
+      // Update the current meal if it's the one being edited
+      if (currentMeal && currentMeal.id === mealId) {
+        setCurrentMeal(data.meal);
+      }
+      
       setSuccess(data.message || 'Meal updated successfully!');
-      setShowEditModal(false);
       setError(null); // Clear any previous errors
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       setError(`Error updating meal: ${errorMessage}`);
-      setShowEditModal(false); // Close modal even on error so user can see the error message
     }
   };
 
@@ -139,33 +130,29 @@ export default function Home() {
         {/* Hero Section */}
         <HeroSection />
 
-        {/* Stats Card */}
-        <StatsCard mealCount={meals.length} isLoading={isLoading} />
-
-        {/* Error/Success Messages */}
-        <ErrorMessage error={error} success={success} onClear={clearMessages} />
-
-        {/* Meal Card */}
-        {currentMeal && (
-          <MealCard 
-            meal={currentMeal} 
-            onEdit={handleEditMeal}
+        {/* Tab Content */}
+        {activeTab === 'generate' ? (
+          <GenerateView
+            meals={meals}
+            currentMeal={currentMeal}
+            isLoading={isLoading}
+            error={error}
+            success={success}
+            onGetRandomMeal={getRandomMeal}
+            onUpdateMeal={handleUpdateMeal}
+            onClearMessages={clearMessages}
+          />
+        ) : (
+          <AllMealsView
+            meals={meals}
+            onUpdateMeal={handleUpdateMeal}
           />
         )}
 
-        {/* Edit Modal */}
-        {showEditModal && currentMeal && (
-          <EditModal
-            meal={currentMeal}
-            onClose={handleCloseEditModal}
-            onUpdate={handleUpdateMeal}
-          />
-        )}
-
-        {/* Action Buttons */}
-        <ActionButtons 
-          onGetRandomMeal={getRandomMeal}
-          isLoading={isLoading}
+        {/* Tab Navigation */}
+        <TabNavigation
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
         />
       </div>
     </div>
