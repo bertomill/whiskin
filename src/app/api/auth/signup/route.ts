@@ -21,6 +21,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Please enter a valid email address' },
+        { status: 400 }
+      );
+    }
+
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
@@ -45,8 +54,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-          // Remove password from response
-      const { password: _password, ...userWithoutPassword } = user;
+    // Remove password from response
+    const { password: _password, ...userWithoutPassword } = user;
 
     return NextResponse.json(
       { 
@@ -57,6 +66,23 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Signup error:', error);
+    
+    // Check if it's a database connection error
+    if (error instanceof Error && error.message.includes('connect')) {
+      return NextResponse.json(
+        { error: 'Database connection error. Please try again later.' },
+        { status: 503 }
+      );
+    }
+    
+    // Check if it's a Prisma error
+    if (error instanceof Error && error.message.includes('prisma')) {
+      return NextResponse.json(
+        { error: 'Database error. Please try again later.' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
