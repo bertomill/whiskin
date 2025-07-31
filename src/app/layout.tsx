@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import SessionProvider from "@/components/SessionProvider";
 
 export const metadata: Metadata = {
   title: "MealBoost",
@@ -28,7 +29,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="MealBoost" />
       </head>
-      <body>{children}</body>
+      <body>
+        <SessionProvider>
+          {children}
+        </SessionProvider>
+      </body>
     </html>
   );
 }

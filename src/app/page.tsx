@@ -5,6 +5,8 @@ import HeroSection from '@/components/HeroSection';
 import TabNavigation from '@/components/TabNavigation';
 import GenerateView from '@/components/GenerateView';
 import AllMealsView from '@/components/AllMealsView';
+import AuthGuard from '@/components/AuthGuard';
+import UserProfile from '@/components/UserProfile';
 
 interface Meal {
   id: string;
@@ -125,36 +127,44 @@ export default function Home() {
   };
 
   return (
-    <div className="gradient-bg min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <HeroSection />
+    <AuthGuard>
+      <div className="gradient-bg min-h-screen">
+        <div className="container mx-auto px-4 py-8">
+          {/* Header with User Profile */}
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex-1"></div>
+            <UserProfile />
+          </div>
 
-        {/* Tab Content */}
-        {activeTab === 'generate' ? (
-          <GenerateView
-            meals={meals}
-            currentMeal={currentMeal}
-            isLoading={isLoading}
-            error={error}
-            success={success}
-            onGetRandomMeal={getRandomMeal}
-            onUpdateMeal={handleUpdateMeal}
-            onClearMessages={clearMessages}
-          />
-        ) : (
-          <AllMealsView
-            meals={meals}
-            onUpdateMeal={handleUpdateMeal}
-          />
-        )}
+          {/* Hero Section */}
+          <HeroSection />
 
-        {/* Tab Navigation */}
-        <TabNavigation
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
+          {/* Tab Content */}
+          {activeTab === 'generate' ? (
+            <GenerateView
+              meals={meals}
+              currentMeal={currentMeal}
+              isLoading={isLoading}
+              error={error}
+              success={success}
+              onGetRandomMeal={getRandomMeal}
+              onUpdateMeal={handleUpdateMeal}
+              onClearMessages={clearMessages}
+            />
+          ) : (
+            <AllMealsView
+              meals={meals}
+              onUpdateMeal={handleUpdateMeal}
+            />
+          )}
+
+          {/* Tab Navigation */}
+          <TabNavigation
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }
