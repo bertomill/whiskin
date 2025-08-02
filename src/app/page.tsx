@@ -5,7 +5,6 @@ import HeroSection from '@/components/HeroSection';
 import TabNavigation from '@/components/TabNavigation';
 import GenerateView from '@/components/GenerateView';
 import AllMealsView from '@/components/AllMealsView';
-import AuthGuard from '@/components/AuthGuard';
 import UserProfile from '@/components/UserProfile';
 
 interface Meal {
