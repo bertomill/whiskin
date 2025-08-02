@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import StatsCard from './StatsCard';
 import MealCard from './MealCard';
 import ActionButtons from './ActionButtons';
@@ -38,9 +39,14 @@ export default function GenerateView({
   onUpdateMeal,
   onClearMessages
 }: GenerateViewProps) {
+  const { data: session } = useSession();
   const [showEditModal, setShowEditModal] = useState(false);
 
   const handleEditMeal = () => {
+    if (!session) {
+      alert('Please sign in to edit meals');
+      return;
+    }
     setShowEditModal(true);
   };
 

@@ -1,24 +1,14 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 interface AuthGuardProps {
   children: React.ReactNode;
+  requireAuth?: boolean;
 }
 
-export default function AuthGuard({ children }: AuthGuardProps) {
+export default function AuthGuard({ children, requireAuth = false }: AuthGuardProps) {
   const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === 'loading') return; // Still loading
-
-    if (!session) {
-      router.push('/auth/signin');
-    }
-  }, [session, status, router]);
 
   // Show loading state while checking authentication
   if (status === 'loading') {
@@ -36,11 +26,28 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     );
   }
 
-  // Show children only if authenticated
+  // If authentication is not required, always show children
+  if (!requireAuth) {
+    return <>{children}</>;
+  }
+
+  // If authentication is required and user is authenticated, show children
   if (session) {
     return <>{children}</>;
   }
 
-  // Return null while redirecting
-  return null;
+  // If authentication is required but user is not authenticated, show sign-in prompt
+  return (
+    <div className="min-h-screen gradient-bg flex items-center justify-center">
+      <div className="text-center">
+        <p className="text-white text-lg mb-4">Please sign in to access this feature</p>
+        <a 
+          href="/auth/signin" 
+          className="bg-white text-gray-900 px-6 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          Sign In
+        </a>
+      </div>
+    </div>
+  );
 } 

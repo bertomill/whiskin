@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
+import { useSession } from 'next-auth/react';
 import EditModal from './EditModal';
 
 interface Meal {
@@ -20,6 +20,7 @@ interface AllMealsViewProps {
 }
 
 export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps) {
+  const { data: session } = useSession();
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -83,6 +84,10 @@ export default function AllMealsView({ meals, onUpdateMeal }: AllMealsViewProps)
   };
 
   const handleEditMeal = (meal: Meal) => {
+    if (!session) {
+      alert('Please sign in to edit meals');
+      return;
+    }
     setSelectedMeal(meal);
     setShowEditModal(true);
   };

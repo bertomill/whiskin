@@ -1,3 +1,7 @@
+'use client';
+
+import { useSession } from 'next-auth/react';
+
 interface Meal {
   id: string;
   name: string;
@@ -14,6 +18,7 @@ interface MealCardProps {
 }
 
 export default function MealCard({ meal, onEdit }: MealCardProps) {
+  const { data: session } = useSession();
   const displayIngredients = (type: string, ingredients: string[]) => {
     if (ingredients.length === 0) return null;
 
@@ -61,15 +66,17 @@ export default function MealCard({ meal, onEdit }: MealCardProps) {
             <h2 className="text-2xl meal-name text-white text-center flex-1">
               {meal.name}
             </h2>
-            <button 
-              onClick={onEdit}
-              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 ml-4"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-              </svg>
-              Edit
-            </button>
+            {session && (
+              <button 
+                onClick={onEdit}
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 ml-4"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Edit
+              </button>
+            )}
           </div>
           
           {/* Ingredients Grid */}

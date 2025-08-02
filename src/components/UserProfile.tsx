@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function UserProfile() {
   const { data: session } = useSession();
@@ -11,7 +12,17 @@ export default function UserProfile() {
     signOut({ callbackUrl: '/auth/signin' });
   };
 
-  if (!session?.user) return null;
+  // Show sign-in button if not authenticated
+  if (!session?.user) {
+    return (
+      <Link
+        href="/auth/signin"
+        className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg border border-white/20 transition-colors text-sm font-medium"
+      >
+        Sign In
+      </Link>
+    );
+  }
 
   return (
     <div className="relative">

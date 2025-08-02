@@ -10,46 +10,83 @@ const databaseId = process.env.NOTION_DATABASE_ID;
 
 // GET - Fetch all meals
 async function handleGetMeals() {
-  const response = await notion.databases.query({
-    database_id: databaseId!,
-    filter: {
-      property: 'Name',
-      title: {
-        is_not_empty: true
+  // Add debugging information
+  console.log('Attempting to fetch meals from Notion...');
+  console.log('Database ID:', databaseId ? 'Set' : 'Not set');
+  console.log('Notion Token:', process.env.NOTION_TOKEN ? 'Set' : 'Not set');
+  
+  try {
+    const response = await notion.databases.query({
+      database_id: databaseId!,
+      filter: {
+        property: 'Name',
+        title: {
+          is_not_empty: true
+        }
+      }
+    });
+
+    console.log('Successfully fetched meals from Notion');
+
+    const meals = response.results.map((page: any) => {
+      const properties = page.properties;
+      
+      // Extract image URL from the image property
+      let imageUrl = null;
+      if (properties.Image && properties.Image.files && properties.Image.files.length > 0) {
+        const imageFile = properties.Image.files[0];
+        if (imageFile.type === 'external') {
+          imageUrl = imageFile.external.url;
+        } else if (imageFile.type === 'file') {
+          imageUrl = imageFile.file.url;
+        }
+      }
+      
+      return {
+        id: page.id,
+        name: properties.Name?.title?.[0]?.plain_text || 'Unnamed Meal',
+        protein: properties.Protein?.multi_select?.map((item: any) => item.name) || [],
+        vegFruit: properties['Veg/Fruit']?.multi_select?.map((item: any) => item.name) || [],
+        otherIngredients: properties['Other Ingredients']?.multi_select?.map((item: any) => item.name) || [],
+        carb: properties.Carb?.multi_select?.map((item: any) => item.name) || [],
+        image: imageUrl
+      };
+    });
+
+    return NextResponse.json({
+      meals,
+      count: meals.length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error in handleGetMeals:', error);
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes('unauthorized') || error.message.includes('401')) {
+        return NextResponse.json({ 
+          error: 'Notion authentication failed. Please check your NOTION_TOKEN.',
+          details: error.message
+        }, { status: 401 });
+      }
+      
+      if (error.message.includes('not_found') || error.message.includes('404')) {
+        return NextResponse.json({ 
+          error: 'Notion database not found. Please check your NOTION_DATABASE_ID.',
+          details: error.message
+        }, { status: 404 });
+      }
+      
+      if (error.message.includes('timeout') || error.message.includes('ConnectTimeoutError')) {
+        return NextResponse.json({ 
+          error: 'Connection to Notion API timed out. Please check your internet connection and try again.',
+          details: error.message
+        }, { status: 504 });
       }
     }
-  });
-
-  const meals = response.results.map(page => {
-    const properties = page.properties;
     
-    // Extract image URL from the image property
-    let imageUrl = null;
-    if (properties.Image && properties.Image.files && properties.Image.files.length > 0) {
-      const imageFile = properties.Image.files[0];
-      if (imageFile.type === 'external') {
-        imageUrl = imageFile.external.url;
-      } else if (imageFile.type === 'file') {
-        imageUrl = imageFile.file.url;
-      }
-    }
-    
-    return {
-      id: page.id,
-      name: properties.Name?.title?.[0]?.plain_text || 'Unnamed Meal',
-      protein: properties.Protein?.multi_select?.map(item => item.name) || [],
-      vegFruit: properties['Veg/Fruit']?.multi_select?.map(item => item.name) || [],
-      otherIngredients: properties['Other Ingredients']?.multi_select?.map(item => item.name) || [],
-      carb: properties.Carb?.multi_select?.map(item => item.name) || [],
-      image: imageUrl
-    };
-  });
-
-  return NextResponse.json({
-    meals,
-    count: meals.length,
-    timestamp: new Date().toISOString()
-  });
+    throw error; // Re-throw to be handled by the main error handler
+  }
 }
 
 // POST - Create a new meal
@@ -130,7 +167,7 @@ async function handleCreateMeal(request: NextRequest) {
 }
 
 // PUT - Update an existing meal (unused but kept for future use)
-async function handleUpdateMeal(_request: NextRequest, _mealId: string) {
+async function handleUpdateMeal(request: NextRequest, mealId: string) {
   const body = await request.json();
   const { name, protein, vegFruit, otherIngredients, carb, image } = body;
 
