@@ -3,7 +3,7 @@
 import React from 'react';
 import { Sidebar, SidebarBody, SidebarLink, useSidebar } from '@/components/ui/sidebar';
 import { IconDice, IconList, IconRefresh, IconChefHat, IconUser } from '@tabler/icons-react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 
