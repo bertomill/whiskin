@@ -42,9 +42,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Standard favicons */}
-        <link rel="icon" href="/whisk-icon.png" />
-        <link rel="apple-touch-icon" href="/whisk-icon.png" />
+        {/* Standard favicons with cache busting */}
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
+        <link rel="shortcut icon" href="/favicon-32x32.png?v=2" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/whisk-icon.png?v=2" />
         
         {/* PWA manifest - enables "Add to Home Screen" functionality */}
         <link rel="manifest" href="/manifest.json" />
