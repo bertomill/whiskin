@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
 import AddToHomeScreen from "@/components/AddToHomeScreen";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 export const metadata: Metadata = {
   title: "Whiskin",
@@ -79,11 +80,13 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <SessionProvider>
-          {children}
-          {/* Add to Home Screen component - shows install prompt on mobile */}
-          <AddToHomeScreen />
-        </SessionProvider>
+        <ThemeProvider>
+          <SessionProvider>
+            {children}
+            {/* Add to Home Screen component - shows install prompt on mobile */}
+            <AddToHomeScreen />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

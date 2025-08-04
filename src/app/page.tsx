@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import HeroSection from '@/components/HeroSection';
-import TabNavigation from '@/components/TabNavigation';
 import GenerateView from '@/components/GenerateView';
 import AllMealsView from '@/components/AllMealsView';
 import UserProfile from '@/components/UserProfile';
+import WhiskinSidebar from '@/components/WhiskinSidebar';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/lib/utils';
 
 interface Meal {
   id: string;
@@ -18,6 +20,7 @@ interface Meal {
 }
 
 export default function Home() {
+  const { isDarkMode } = useTheme();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [currentMeal, setCurrentMeal] = useState<Meal | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -126,42 +129,47 @@ export default function Home() {
   };
 
   return (
-    <div className="gradient-bg min-h-screen">
-      <div className="container mx-auto px-4 py-4">
-        {/* Header with User Profile */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex-1"></div>
-          <UserProfile />
+    <WhiskinSidebar
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      onRefreshMeals={loadMeals}
+    >
+      <div className={cn(
+        "min-h-screen",
+        isDarkMode 
+          ? "bg-gradient-to-br from-slate-900 via-stone-900 to-slate-800"
+          : "gradient-bg"
+      )}>
+        <div className="container mx-auto px-4 py-4">
+          {/* Header with User Profile */}
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex-1"></div>
+            <UserProfile />
+          </div>
+
+          {/* Hero Section */}
+          <HeroSection />
+
+          {/* Tab Content */}
+          {activeTab === 'generate' ? (
+            <GenerateView
+              meals={meals}
+              currentMeal={currentMeal}
+              isLoading={isLoading}
+              error={error}
+              success={success}
+              onGetRandomMeal={getRandomMeal}
+              onUpdateMeal={handleUpdateMeal}
+              onClearMessages={clearMessages}
+            />
+          ) : (
+            <AllMealsView
+              meals={meals}
+              onUpdateMeal={handleUpdateMeal}
+            />
+          )}
         </div>
-
-        {/* Hero Section */}
-        <HeroSection />
-
-        {/* Tab Content */}
-        {activeTab === 'generate' ? (
-          <GenerateView
-            meals={meals}
-            currentMeal={currentMeal}
-            isLoading={isLoading}
-            error={error}
-            success={success}
-            onGetRandomMeal={getRandomMeal}
-            onUpdateMeal={handleUpdateMeal}
-            onClearMessages={clearMessages}
-          />
-        ) : (
-          <AllMealsView
-            meals={meals}
-            onUpdateMeal={handleUpdateMeal}
-          />
-        )}
-
-        {/* Tab Navigation */}
-        <TabNavigation
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
       </div>
-    </div>
+    </WhiskinSidebar>
   );
 }

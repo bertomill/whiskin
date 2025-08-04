@@ -1,5 +1,5 @@
-/* Import Inter font from Google Fonts - must come first */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+/* Import Poppins font from Google Fonts - whimsical and friendly */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,17 +7,17 @@
 
 /* Base font family */
 * {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-/* Custom gradient background */
+/* Beautiful airy kitchen gradient background */
 .gradient-bg {
-  background: linear-gradient(180deg, #1e1b4b 0%, #000000 100%);
+  background: linear-gradient(180deg, #fafaf9 0%, #f5f5f4 50%, #e7e5e4 100%);
 }
 
-/* Card shadow */
+/* Card shadow - softer, more natural */
 .card-shadow {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Meal card animations */
@@ -42,7 +42,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* Ingredient tags - using regular CSS instead of @apply */
+/* Ingredient tags - warm, natural colors */
 .tag {
   display: inline-flex;
   align-items: center;
@@ -54,27 +54,27 @@
 }
 
 .tag.protein {
-  background-color: rgba(127, 29, 29, 0.3);
-  color: rgb(254, 226, 226);
-  border: 1px solid rgba(220, 38, 38, 0.5);
+  background-color: rgba(239, 68, 68, 0.1);
+  color: rgb(153, 27, 27);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .tag.veg-fruit {
-  background-color: rgba(20, 83, 45, 0.3);
-  color: rgb(220, 252, 231);
-  border: 1px solid rgba(22, 163, 74, 0.5);
+  background-color: rgba(34, 197, 94, 0.1);
+  color: rgb(21, 128, 61);
+  border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
 .tag.carb {
-  background-color: rgba(133, 77, 14, 0.3);
-  color: rgb(254, 240, 138);
-  border: 1px solid rgba(202, 138, 4, 0.5);
+  background-color: rgba(245, 158, 11, 0.1);
+  color: rgb(146, 64, 14);
+  border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .tag.other {
-  background-color: rgba(75, 85, 99, 0.3);
-  color: rgb(243, 244, 246);
-  border: 1px solid rgba(107, 114, 128, 0.5);
+  background-color: rgba(107, 114, 128, 0.1);
+  color: rgb(55, 65, 81);
+  border: 1px solid rgba(107, 114, 128, 0.2);
 }
 
 /* Fade in animation */
@@ -92,29 +92,34 @@
   font-weight: 800;
   letter-spacing: -0.025em;
   line-height: 1.1;
+  color: #292524; /* Warm dark brown */
 }
 
 .hero-subtitle {
   font-weight: 400;
   letter-spacing: 0.025em;
   line-height: 1.6;
+  color: #78716c; /* Warm gray */
 }
 
 .meal-name {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
+  color: #292524; /* Warm dark brown */
 }
 
 .section-title {
   font-weight: 600;
   letter-spacing: 0.01em;
   line-height: 1.4;
+  color: #44403c; /* Warm medium brown */
 }
 
 .stats-number {
   font-weight: 800;
   letter-spacing: -0.02em;
+  color: #292524; /* Warm dark brown */
 }
 
 .button-text {
