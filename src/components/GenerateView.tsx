@@ -1,34 +1,34 @@
-'use client';
+'use client'; // This indicates that this component will run on the client side (in the browser)
 
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+// Import necessary dependencies and components
 import StatsCard from './StatsCard';
 import MealCard from './MealCard';
 import ActionButtons from './ActionButtons';
 import ErrorMessage from './ErrorMessage';
-import EditModal from './EditModal';
 
+// Define the structure of a Meal object
 interface Meal {
-  id: string;
-  name: string;
-  protein: string[];
-  vegFruit: string[];
-  otherIngredients: string[];
-  carb: string[];
-  image?: string;
+  id: string;          // Unique identifier for the meal
+  name: string;        // Name of the meal
+  protein: string[];   // Array of protein ingredients
+  vegFruit: string[]; // Array of vegetable/fruit ingredients
+  otherIngredients: string[]; // Array of other ingredients
+  carb: string[];     // Array of carbohydrate ingredients
+  image?: string;     // Optional image URL
 }
 
+// Define the props that the GenerateView component accepts
 interface GenerateViewProps {
-  meals: Meal[];
-  currentMeal: Meal | null;
-  isLoading: boolean;
-  error: string | null;
-  success: string | null;
-  onGetRandomMeal: () => void;
-  onUpdateMeal: (mealId: string, updatedMeal: Omit<Meal, 'id'>) => Promise<void>;
-  onClearMessages: () => void;
+  meals: Meal[];      // Array of all meals
+  currentMeal: Meal | null;  // Currently selected meal
+  isLoading: boolean; // Loading state indicator
+  error: string | null; // Error message if any
+  success: string | null; // Success message if any
+  onGetRandomMeal: () => void; // Function to get a random meal
+  onClearMessages: () => void; // Function to clear error/success messages
 }
 
+// Main component definition
 export default function GenerateView({
   meals,
   currentMeal,
@@ -36,57 +36,26 @@ export default function GenerateView({
   error,
   success,
   onGetRandomMeal,
-  onUpdateMeal,
   onClearMessages
 }: GenerateViewProps) {
-  const { data: session } = useSession();
-  const [showEditModal, setShowEditModal] = useState(false);
 
-  const handleEditMeal = () => {
-    if (!session) {
-      alert('Please sign in to edit meals');
-      return;
-    }
-    setShowEditModal(true);
-  };
-
-  const handleCloseEditModal = () => {
-    setShowEditModal(false);
-  };
-
-  const handleUpdateMeal = async (updatedMeal: Omit<Meal, 'id'>) => {
-    if (!currentMeal) return;
-    
-    await onUpdateMeal(currentMeal.id, updatedMeal);
-    setShowEditModal(false);
-  };
-
+  // Component's rendered UI
   return (
-    <div className="pb-16"> {/* Add bottom padding to account for tab bar */}
-      {/* Stats Card */}
+    <div className="pb-16"> {/* Container with bottom padding for tab bar */}
+      {/* Display statistics about meals */}
       <StatsCard mealCount={meals.length} isLoading={isLoading} />
 
-      {/* Error/Success Messages */}
+      {/* Display any error or success messages */}
       <ErrorMessage error={error} success={success} onClear={onClearMessages} />
 
-      {/* Meal Card */}
+      {/* Display the current meal if one is selected */}
       {currentMeal && (
         <MealCard 
           meal={currentMeal} 
-          onEdit={handleEditMeal}
         />
       )}
 
-      {/* Edit Modal */}
-      {showEditModal && currentMeal && (
-        <EditModal
-          meal={currentMeal}
-          onClose={handleCloseEditModal}
-          onUpdate={handleUpdateMeal}
-        />
-      )}
-
-      {/* Action Buttons */}
+      {/* Buttons for user actions */}
       <ActionButtons 
         onGetRandomMeal={onGetRandomMeal}
         isLoading={isLoading}

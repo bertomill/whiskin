@@ -6,7 +6,6 @@ import GenerateView from '@/components/GenerateView';
 import AllMealsView from '@/components/AllMealsView';
 import UserProfile from '@/components/UserProfile';
 import WhiskinSidebar from '@/components/WhiskinSidebar';
-import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 
 interface Meal {
@@ -20,7 +19,6 @@ interface Meal {
 }
 
 export default function Home() {
-  const { isDarkMode } = useTheme();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [currentMeal, setCurrentMeal] = useState<Meal | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -82,46 +80,6 @@ export default function Home() {
 
 
 
-  const handleUpdateMeal = async (mealId: string, updatedMeal: Omit<Meal, 'id'>) => {
-    try {
-      const response = await fetch(`/api/meals/${mealId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedMeal),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      // Update the meals array with the updated meal
-      setMeals(prevMeals => 
-        prevMeals.map(meal => 
-          meal.id === mealId ? data.meal : meal
-        )
-      );
-      
-      // Update the current meal if it's the one being edited
-      if (currentMeal && currentMeal.id === mealId) {
-        setCurrentMeal(data.meal);
-      }
-      
-      setSuccess(data.message || 'Meal updated successfully!');
-      setError(null); // Clear any previous errors
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setError(`Error updating meal: ${errorMessage}`);
-    }
-  };
 
   const clearMessages = () => {
     setError(null);
@@ -134,12 +92,7 @@ export default function Home() {
       onTabChange={setActiveTab}
       onRefreshMeals={loadMeals}
     >
-      <div className={cn(
-        "min-h-screen",
-        isDarkMode 
-          ? "bg-gradient-to-br from-slate-900 via-stone-900 to-slate-800"
-          : "gradient-bg"
-      )}>
+      <div className="min-h-screen gradient-bg">
         <div className="container mx-auto px-4 py-4">
           {/* Header with User Profile */}
           <div className="flex justify-between items-center mb-4">
@@ -159,13 +112,11 @@ export default function Home() {
               error={error}
               success={success}
               onGetRandomMeal={getRandomMeal}
-              onUpdateMeal={handleUpdateMeal}
               onClearMessages={clearMessages}
             />
           ) : (
             <AllMealsView
               meals={meals}
-              onUpdateMeal={handleUpdateMeal}
             />
           )}
         </div>

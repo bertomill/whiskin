@@ -2,11 +2,10 @@
 
 import React from 'react';
 import { Sidebar, SidebarBody, SidebarLink, useSidebar } from '@/components/ui/sidebar';
-import { IconDice, IconList, IconRefresh, IconChefHat, IconUser, IconMoon, IconSun } from '@tabler/icons-react';
+import { IconDice, IconList, IconRefresh, IconChefHat, IconUser } from '@tabler/icons-react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
-import { useTheme } from '@/contexts/ThemeContext';
 
 // Define the interface for the props that WhiskinSidebar expects
 interface WhiskinSidebarProps {
@@ -16,6 +15,24 @@ interface WhiskinSidebarProps {
   onRefreshMeals: () => void;
 }
 
+// Define the navigation links for the sidebar
+const sidebarLinks = [
+  {
+    label: 'Generate Meal',
+    href: '#generate',
+    icon: (
+      <IconDice className="h-5 w-5 shrink-0 text-stone-600" />
+    ),
+  },
+  {
+    label: 'All Meals',
+    href: '#all-meals',
+    icon: (
+      <IconList className="h-5 w-5 shrink-0 text-stone-600" />
+    ),
+  },
+];
+
 export default function WhiskinSidebar({
   children,
   activeTab,
@@ -23,31 +40,6 @@ export default function WhiskinSidebar({
   onRefreshMeals,
 }: WhiskinSidebarProps) {
   const { data: session } = useSession();
-  const { isDarkMode, toggleDarkMode } = useTheme();
-  
-  // Define the navigation links for the sidebar
-  const sidebarLinks = [
-    {
-      label: 'Generate Meal',
-      href: '#generate',
-      icon: (
-        <IconDice className={cn(
-          "h-5 w-5 shrink-0",
-          isDarkMode ? "text-stone-300" : "text-gray-600"
-        )} />
-      ),
-    },
-    {
-      label: 'All Meals',
-      href: '#all-meals',
-      icon: (
-        <IconList className={cn(
-          "h-5 w-5 shrink-0",
-          isDarkMode ? "text-stone-300" : "text-gray-600"
-        )} />
-      ),
-    },
-  ];
   
   // Function to handle tab changes
   const handleTabChange = (tab: 'generate' | 'all-meals') => {
@@ -57,12 +49,7 @@ export default function WhiskinSidebar({
   return (
     <div className="flex h-screen w-full">
       <Sidebar>
-        <SidebarBody className={cn(
-          "justify-between gap-10 border-r",
-          isDarkMode 
-            ? "bg-slate-900 border-stone-700" 
-            : "bg-white border-gray-200"
-        )}>
+        <SidebarBody className="justify-between gap-10 bg-stone-50 border-r border-stone-200">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
             {/* Logo Section - now part of navigation */}
             <div className="px-2 py-4">
@@ -72,11 +59,7 @@ export default function WhiskinSidebar({
                   href: '#logo',
                   icon: (
                     <div className="h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                      <img 
-                        src="/icons/whisk-icon.png" 
-                        alt="Whiskin logo" 
-                        className="h-5 w-5"
-                      />
+                      <IconChefHat className="h-5 w-5 text-white" />
                     </div>
                   ),
                 }}
@@ -84,9 +67,7 @@ export default function WhiskinSidebar({
                   "rounded-lg transition-colors",
                   activeTab === 'generate'
                     ? 'bg-amber-100 text-amber-900 border border-amber-200'
-                    : isDarkMode
-                      ? 'text-stone-300 hover:bg-stone-800'
-                      : 'text-gray-600 hover:bg-gray-100'
+                    : 'text-stone-600 hover:bg-stone-100'
                 )}
               />
             </div>
@@ -111,16 +92,14 @@ export default function WhiskinSidebar({
                     (link.href === '#generate' && activeTab === 'generate') ||
                     (link.href === '#all-meals' && activeTab === 'all-meals')
                       ? 'bg-amber-100 text-amber-900 border border-amber-200'
-                      : isDarkMode
-                        ? 'text-stone-300 hover:bg-stone-800'
-                        : 'text-gray-600 hover:bg-gray-100'
+                      : 'text-stone-600 hover:bg-stone-100'
                   )}
                 />
               ))}
             </div>
           </div>
 
-          {/* Footer with Refresh, Theme Toggle, and Sign In buttons */}
+          {/* Footer with Refresh and Sign In buttons */}
           <div className="px-2 pb-4 space-y-2">
             {/* Refresh Button */}
             <SidebarLink
@@ -128,51 +107,14 @@ export default function WhiskinSidebar({
                 label: 'Refresh Meals',
                 href: '#refresh',
                 icon: (
-                  <IconRefresh className={cn(
-                    "h-5 w-5 shrink-0",
-                    isDarkMode ? "text-stone-300" : "text-gray-600"
-                  )} />
+                  <IconRefresh className="h-5 w-5 shrink-0 text-stone-600" />
                 ),
               }}
               onClick={(e) => {
                 e.preventDefault();
                 onRefreshMeals();
               }}
-              className={cn(
-                "rounded-lg transition-colors",
-                isDarkMode
-                  ? "text-stone-300 hover:bg-stone-800"
-                  : "text-gray-600 hover:bg-gray-100"
-              )}
-            />
-            
-            {/* Dark Mode Toggle Button */}
-            <SidebarLink
-              link={{
-                label: isDarkMode ? 'Light Mode' : 'Dark Mode',
-                href: '#theme-toggle',
-                icon: isDarkMode ? (
-                  <IconSun className={cn(
-                    "h-5 w-5 shrink-0",
-                    isDarkMode ? "text-stone-300" : "text-gray-600"
-                  )} />
-                ) : (
-                  <IconMoon className={cn(
-                    "h-5 w-5 shrink-0",
-                    isDarkMode ? "text-stone-300" : "text-gray-600"
-                  )} />
-                ),
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                toggleDarkMode();
-              }}
-              className={cn(
-                "rounded-lg transition-colors",
-                isDarkMode
-                  ? "text-stone-300 hover:bg-stone-800"
-                  : "text-gray-600 hover:bg-gray-100"
-              )}
+              className="rounded-lg transition-colors text-stone-600 hover:bg-stone-100"
             />
             
             {/* Sign In/User Profile Button */}
@@ -181,18 +123,10 @@ export default function WhiskinSidebar({
                 label: session ? 'Profile' : 'Sign In',
                 href: session ? '#profile' : '/auth/signin',
                 icon: (
-                  <IconUser className={cn(
-                    "h-5 w-5 shrink-0",
-                    isDarkMode ? "text-stone-300" : "text-gray-600"
-                  )} />
+                  <IconUser className="h-5 w-5 shrink-0 text-stone-600" />
                 ),
               }}
-              className={cn(
-                "rounded-lg transition-colors",
-                isDarkMode
-                  ? "text-stone-300 hover:bg-stone-800"
-                  : "text-gray-600 hover:bg-gray-100"
-              )}
+              className="rounded-lg transition-colors text-stone-600 hover:bg-stone-100"
             />
           </div>
         </SidebarBody>
