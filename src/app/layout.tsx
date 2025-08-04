@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   icons: {
     apple: [
       {
-        url: '/apple-touch-icon.png',
+        url: '/whisk-icon.png',
         sizes: '180x180',
         type: 'image/png',
       },
@@ -43,8 +43,8 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Standard favicons */}
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/whisk-icon.png" />
+        <link rel="apple-touch-icon" href="/whisk-icon.png" />
         
         {/* PWA manifest - enables "Add to Home Screen" functionality */}
         <link rel="manifest" href="/manifest.json" />
