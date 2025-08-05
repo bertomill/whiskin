@@ -10,7 +10,7 @@ const mealLogs: Record<string, Record<string, string[]>> = {};
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       // Get logs for specific date
       const userLogs = mealLogs[userId] || {};
       const dayLogs = userLogs[date] || [];
-      
+
       return NextResponse.json({
         date,
         mealIds: dayLogs,
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     } else {
       // Get all logs for user
       const userLogs = mealLogs[userId] || {};
-      
+
       return NextResponse.json({
         logs: userLogs,
         totalDays: Object.keys(userLogs).length
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error('API Error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('API Error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -130,7 +130,7 @@ export async function DELETE(request: NextRequest) {
     // Remove meal from the log
     const dayLogs = mealLogs[userId][date];
     const mealIndex = dayLogs.indexOf(mealId);
-    
+
     if (mealIndex === -1) {
       return NextResponse.json({ error: 'Meal not found in log for this date' }, { status: 404 });
     }
@@ -150,7 +150,7 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error('API Error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });

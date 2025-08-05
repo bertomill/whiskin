@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import HeroSection from '@/components/HeroSection';
 import GenerateView from '@/components/GenerateView';
 import AllMealsView from '@/components/AllMealsView';
-import UserProfile from '@/components/UserProfile';
-import WhiskinSidebar from '@/components/WhiskinSidebar';
-import { cn } from '@/lib/utils';
+import AboutView from '@/components/AboutView';
+import Sidebar from '@/components/Sidebar';
 
 interface Meal {
   id: string;
@@ -24,7 +23,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'generate' | 'all-meals'>('generate');
+  const [activeTab, setActiveTab] = useState<'generate' | 'all-meals' | 'about'>('generate');
 
   // Load meals from the API when component mounts
   useEffect(() => {
@@ -47,11 +46,11 @@ export default function Home() {
 
     try {
       const response = await fetch('/api/meals');
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
 
       if (data.error) {
@@ -78,30 +77,24 @@ export default function Home() {
     setError(null);
   };
 
-
-
-
   const clearMessages = () => {
     setError(null);
     setSuccess(null);
   };
 
   return (
-    <WhiskinSidebar
+    <Sidebar
       activeTab={activeTab}
       onTabChange={setActiveTab}
       onRefreshMeals={loadMeals}
     >
       <div className="min-h-screen gradient-bg">
-        <div className="container mx-auto px-4 py-4">
-          {/* Header with User Profile */}
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex-1"></div>
-            <UserProfile />
+        <div className="w-full max-w-4xl mx-auto px-4 py-4">
+          {/* Add top padding on mobile for menu button */}
+          <div className="pt-12 md:pt-0">
+            {/* Hero Section */}
+            <HeroSection />
           </div>
-
-          {/* Hero Section */}
-          <HeroSection />
 
           {/* Tab Content */}
           {activeTab === 'generate' ? (
@@ -114,13 +107,15 @@ export default function Home() {
               onGetRandomMeal={getRandomMeal}
               onClearMessages={clearMessages}
             />
-          ) : (
+          ) : activeTab === 'all-meals' ? (
             <AllMealsView
               meals={meals}
             />
+          ) : (
+            <AboutView />
           )}
         </div>
       </div>
-    </WhiskinSidebar>
+    </Sidebar>
   );
 }

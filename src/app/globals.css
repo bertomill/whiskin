@@ -126,3 +126,36 @@
   font-weight: 600;
   letter-spacing: 0.025em;
 }
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .meal-card {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+}
+
+/* Ensure mobile menu doesn't interfere with content */
+@media (max-width: 768px) {
+  .mobile-content-padding {
+    padding-top: 4rem;
+  }
+}

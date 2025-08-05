@@ -109,3 +109,19 @@ export const authOptions: NextAuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }; 
+
+
+
+// [...nextauth] is a Next.js dynamic route file naming convention
+// The square brackets indicate a dynamic route that catches all segments
+// The three dots (...) make it a "catch-all" route that captures multiple path segments
+// This allows NextAuth to handle all authentication-related routes like:
+// - /api/auth/signin
+// - /api/auth/signout  
+// - /api/auth/callback/google
+// - /api/auth/callback/github
+// - /api/auth/session
+// - etc.
+// 
+// The file should be located at: /pages/api/auth/[...nextauth].js (Pages Router)
+// or /app/api/auth/[...nextauth]/route.js (App Router)

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { IconChefHat } from '@tabler/icons-react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -45,26 +46,24 @@ export default function SignIn() {
       <div className="max-w-md w-full">
         {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-full mb-4 border border-white/20">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full mb-4 shadow-sm">
+            <IconChefHat className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome to Whiskin</h1>
-          <p className="text-gray-300">Sign in to continue</p>
+          <h1 className="text-3xl font-bold text-stone-800 mb-2">Welcome to Whiskin</h1>
+          <p className="text-stone-600">Sign in to continue</p>
         </div>
 
         {/* Sign In Form */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 p-6">
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-stone-200/50 p-6 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3">
-                <p className="text-red-200 text-sm">{error}</p>
+              <div className="bg-red-100 border border-red-300 rounded-lg p-3">
+                <p className="text-red-800 text-sm">{error}</p>
               </div>
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-2">
                 Email
               </label>
               <input
@@ -72,14 +71,14 @@ export default function SignIn() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-stone-800 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent shadow-sm"
                 placeholder="Enter your email"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-stone-700 mb-2">
                 Password
               </label>
               <input
@@ -87,7 +86,7 @@ export default function SignIn() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-white border border-stone-200 rounded-lg text-stone-800 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent shadow-sm"
                 placeholder="Enter your password"
                 required
               />
@@ -96,7 +95,7 @@ export default function SignIn() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200"
+              className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 shadow-sm"
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -104,16 +103,16 @@ export default function SignIn() {
 
           {/* Divider */}
           <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-white/20"></div>
-            <span className="px-4 text-sm text-gray-400">or continue with</span>
-            <div className="flex-1 border-t border-white/20"></div>
+            <div className="flex-1 border-t border-stone-200"></div>
+            <span className="px-4 text-sm text-stone-500">or continue with</span>
+            <div className="flex-1 border-t border-stone-200"></div>
           </div>
 
           {/* Social Sign In Buttons */}
           <div className="space-y-3">
             <button
               onClick={handleGoogleSignIn}
-              className="w-full flex items-center justify-center gap-3 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200"
+              className="w-full flex items-center justify-center gap-3 bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 font-medium py-3 px-4 rounded-lg transition-colors duration-200 shadow-sm"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -127,9 +126,9 @@ export default function SignIn() {
 
           {/* Sign Up Link */}
           <div className="mt-6 text-center">
-            <p className="text-gray-300 text-sm">
+            <p className="text-stone-600 text-sm">
               Don&apos;t have an account?{' '}
-              <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+              <Link href="/auth/signup" className="text-amber-600 hover:text-amber-700 font-medium">
                 Sign up
               </Link>
             </p>

@@ -42,11 +42,11 @@ export default function MealCard({ meal }: MealCardProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mb-4">
-      <div className="bg-white rounded-3xl overflow-hidden card-shadow border border-stone-200/50">
+    <div className="max-w-2xl mx-auto mb-4">
+      <div className="bg-white rounded-2xl md:rounded-3xl overflow-hidden card-shadow border border-stone-200/50 meal-card show">
         {/* Meal Image */}
         {meal.image && (
-          <div className="relative h-48 bg-gradient-to-br from-stone-100 to-stone-200">
+          <div className="relative h-40 md:h-48 bg-gradient-to-br from-stone-100 to-stone-200">
             <img 
               src={meal.image} 
               alt={meal.name}
@@ -57,15 +57,15 @@ export default function MealCard({ meal }: MealCardProps) {
         )}
         
         {/* Meal Content */}
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           <div className="mb-4">
-            <h2 className="text-2xl meal-name text-stone-800 text-center">
+            <h2 className="text-xl md:text-2xl meal-name text-stone-800 text-center">
               {meal.name}
             </h2>
           </div>
           
           {/* Ingredients Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             {displayIngredients('protein', meal.protein)}
             {displayIngredients('veg-fruit', meal.vegFruit)}
             {displayIngredients('carb', meal.carb)}

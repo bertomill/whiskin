@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcryptjs'; // bcrypt is a password hashing library that securely encrypts passwords using a salt and multiple rounds of hashing to protect against rainbow table attacks
+import { prisma } from '@/lib/prisma'; // Prisma is a modern database toolkit that provides type-safe database access, auto-generated queries, and seamless integration with TypeScript - it acts as our ORM (Object-Relational Mapping) layer to interact with the database
 
 // This file handles new user registration (signup) in our application
 // It receives user data, validates it, and creates a new user account

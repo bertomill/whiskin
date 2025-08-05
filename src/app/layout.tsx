@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
-import AddToHomeScreen from "@/components/AddToHomeScreen";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 export const metadata: Metadata = {
@@ -47,21 +46,21 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
         <link rel="shortcut icon" href="/favicon-32x32.png?v=2" />
         <link rel="apple-touch-icon" sizes="180x180" href="/whisk-icon.png?v=2" />
-        
+
         {/* PWA manifest - enables "Add to Home Screen" functionality */}
         <link rel="manifest" href="/manifest.json" />
-        
+
         {/* PWA-specific meta tags for iOS */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="Whiskin" />
-        
+
         {/* Theme color for mobile browsers */}
         <meta name="theme-color" content="#E74C3C" />
-        
+
         {/* Viewport meta tag for responsive design */}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-        
+
         {/* Service worker registration script - enables offline functionality */}
         <script
           dangerouslySetInnerHTML={{
@@ -85,8 +84,6 @@ export default function RootLayout({
         <ThemeProvider>
           <SessionProvider>
             {children}
-            {/* Add to Home Screen component - shows install prompt on mobile */}
-            <AddToHomeScreen />
           </SessionProvider>
         </ThemeProvider>
       </body>
