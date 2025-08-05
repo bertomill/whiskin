@@ -59,6 +59,8 @@ export default function GenerateView({
       <ActionButtons 
         onGetRandomMeal={onGetRandomMeal}
         isLoading={isLoading}
+        hasCurrentMeal={!!currentMeal}
+        currentMeal={currentMeal}
       />
     </div>
   );
