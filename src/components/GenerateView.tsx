@@ -15,6 +15,8 @@ interface Meal {
   otherIngredients: string[]; // Array of other ingredients
   carb: string[];     // Array of carbohydrate ingredients
   image?: string;     // Optional image URL
+  // Any additional properties that come from Notion (e.g., Spices, Sauces, Notes, Time, etc.)
+  extraProperties?: Record<string, string[]>;
 }
 
 // Define the props that the GenerateView component accepts
@@ -42,9 +44,6 @@ export default function GenerateView({
   // Component's rendered UI
   return (
     <div className="pb-16"> {/* Container with bottom padding for tab bar */}
-      {/* Display statistics about meals */}
-      <StatsCard mealCount={meals.length} isLoading={isLoading} />
-
       {/* Display any error or success messages */}
       <ErrorMessage error={error} success={success} onClear={onClearMessages} />
 
@@ -62,6 +61,9 @@ export default function GenerateView({
         hasCurrentMeal={!!currentMeal}
         currentMeal={currentMeal}
       />
+
+      {/* Display statistics about meals at the very bottom */}
+      <StatsCard mealCount={meals.length} isLoading={isLoading} />
     </div>
   );
 } 

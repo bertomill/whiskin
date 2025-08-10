@@ -8,6 +8,33 @@ const notion = new Client({
 
 const databaseId = process.env.NOTION_DATABASE_ID;
 
+// Helper to coerce Notion property to array of strings for UI
+function coercePropertyToStrings(prop: any): string[] {
+  if (!prop) return [];
+  switch (prop.type) {
+    case 'multi_select':
+      return prop.multi_select?.map((i: any) => i.name) ?? [];
+    case 'select':
+      return prop.select ? [prop.select.name] : [];
+    case 'url':
+      return prop.url ? [prop.url] : [];
+    case 'number':
+      return typeof prop.number === 'number' ? [String(prop.number)] : [];
+    case 'checkbox':
+      return [prop.checkbox ? 'Yes' : 'No'];
+    case 'rich_text':
+      return prop.rich_text?.map((t: any) => t.plain_text).filter(Boolean) ?? [];
+    case 'title':
+      return prop.title?.map((t: any) => t.plain_text).filter(Boolean) ?? [];
+    case 'date':
+      return prop.date?.start ? [prop.date.end ? `${prop.date.start} → ${prop.date.end}` : prop.date.start] : [];
+    case 'people':
+      return prop.people?.map((p: any) => p.name || p.id).filter(Boolean) ?? [];
+    default:
+      return [];
+  }
+}
+
 // GET - Fetch all meals
 async function handleGetMeals() {
   // Add debugging information
@@ -28,6 +55,8 @@ async function handleGetMeals() {
 
     console.log('Successfully fetched meals from Notion');
 
+    const CORE_KEYS = new Set(['Name', 'Protein', 'Veg/Fruit', 'Other Ingredients', 'Carb', 'Image']);
+
     const meals = response.results.map((page: any) => {
       const properties = page.properties;
       
@@ -42,6 +71,16 @@ async function handleGetMeals() {
         }
       }
       
+      // Build extra properties dynamically (everything except core keys)
+      const extraProperties: Record<string, string[]> = {};
+      for (const [key, prop] of Object.entries(properties)) {
+        if (CORE_KEYS.has(key)) continue;
+        const values = coercePropertyToStrings(prop as any);
+        if (values.length > 0) {
+          extraProperties[key] = values;
+        }
+      }
+      
       return {
         id: page.id,
         name: properties.Name?.title?.[0]?.plain_text || 'Unnamed Meal',
@@ -49,7 +88,8 @@ async function handleGetMeals() {
         vegFruit: properties['Veg/Fruit']?.multi_select?.map((item: any) => item.name) || [],
         otherIngredients: properties['Other Ingredients']?.multi_select?.map((item: any) => item.name) || [],
         carb: properties.Carb?.multi_select?.map((item: any) => item.name) || [],
-        image: imageUrl
+        image: imageUrl,
+        extraProperties,
       };
     });
 
